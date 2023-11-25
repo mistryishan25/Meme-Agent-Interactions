@@ -18,7 +18,6 @@ class Agent(SimAgent):
         # Agent properties
         self.id = id
         self.state = state
-        self.age = np.random.randint(18, 65)  # Random age between 18 and 65
         self.config = config
 
         # The agent who last sent this Agent the meme, if applicable

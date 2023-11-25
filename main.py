@@ -43,7 +43,7 @@ def main():
     simulate(desc, i_0, s_0, controversial_meme, cc_net, default_config)
 
     # PolarizedCrowd | Controversial Meme | Low Anonymity
-    desc = 'PolarizedCrowd | Controversial Meme | Low Anonymity'
+    desc = 'PolarizedCrowd | Controversial Meme'
     i_0 = 30
     s_0 = 70
     simulate(desc, i_0, s_0, controversial_meme, polarized_net, default_config)
