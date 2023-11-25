@@ -61,9 +61,9 @@ class PolarizedCrowd(NetworkBase):
         # Rename nodes in group2 to have distinct node names
         group2 = nx.relabel_nodes(group2, {node: node + int(num_agents / 2) for node in group2.nodes})
 
-        # Connect the two groups with ~5% of the total nodes
+        # Connect the two groups with ~10% of the total nodes
         cross_edges = []
-        for _ in range(int(num_agents * .05)):
+        for _ in range(int(num_agents * .1)):
             cross_edges.append((np.random.randint(0, int(num_agents / 2)),
                                 np.random.randint(int(num_agents / 2), num_agents)))
 

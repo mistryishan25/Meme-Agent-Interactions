@@ -41,11 +41,10 @@ class Agent(SimAgent):
         # Compute this agent's engagement probability and reaction score
         self.e, self.r = self.react(meme)
 
-        print(f'Agent {self.id} ({self.state.name}) initialized with e={self.e}, r={self.r}:')
-        print(f'{self.describe_anonymity()} anonymous ({self.anonymity})')
-        print(f'{self.describe_ideology()} ideology ({self.ideology})')
-        print(f'{self.describe_susceptability()} susceptible to disinformation ({self.susceptability})')
-        print(f'{self.describe_racism_level()} racist ({self.racism})')
+        self.aprint(f'{self.describe_anonymity()} anonymous ({self.anonymity})')
+        self.aprint(f'{self.describe_ideology()} ideology ({self.ideology})')
+        self.aprint(f'{self.describe_susceptability()} susceptible to disinformation ({self.susceptability})')
+        self.aprint(f'{self.describe_racism_level()} racist ({self.racism})')
 
     def _map_to_attribute(self, cls, val):
         return min(cls, key=lambda x: abs(val - x.value)).name
@@ -91,10 +90,7 @@ class Agent(SimAgent):
         reaction_score = (ideology_diff + racism_diff) / 2  # Calculating engagement level
 
         # Calculate engagement as the distance to either 0 or 1, depending on which is closer
-        if reaction_score >= 0.5:
-            engagement_score = abs(1 - reaction_score)
-        else:
-            engagement_score = abs(reaction_score - 1)
+        engagement_score = abs(1 - reaction_score)
 
         # If a user is anonymous, they are more likely to engage
         anonymity_modifier = self.config.anon_modifier * 2.0 * abs(self.anonymity - 0.5)
