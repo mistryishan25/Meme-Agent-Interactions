@@ -15,6 +15,9 @@ class NetworkBase:
     def nodes(self):
         return nx.nodes(self.graph)
 
+    def neighbors(self, agent_id):
+        return nx.neighbors(self.graph, agent_id)
+
     def get_network_properties(self):
         num_edges = self.graph.number_of_edges()
         num_nodes = self.graph.number_of_nodes()
@@ -25,6 +28,12 @@ class NetworkBase:
         agent_nodes = list(self.graph.nodes)
         random_agent_nodes = random.sample(agent_nodes, num_random_nodes)
         return random_agent_nodes
+
+    def draw(self):
+        pos = nx.spring_layout(self.graph)  # Positions of the nodes
+        nx.draw(self.graph, pos, with_labels=True, node_size=200)
+        plt.title("Network Graph")
+        plt.show()
 
 
 class RandomNetwork(NetworkBase):
@@ -116,3 +125,5 @@ class CommunityClusters(NetworkBase):
             nx.draw(community_clusters, pos, with_labels=True, node_size=200)
             plt.title("Network (Community Clusters)")
             plt.show()
+
+        self.graph = community_clusters

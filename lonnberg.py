@@ -56,7 +56,7 @@ class Lonnberg:
         self.S[t + 1] = max(0, self.S[t] + dS)
         self.I[t + 1] = max(0, self.I[t] + dI)
         self.R[t + 1] = max(0, self.R[t] + dR)
-        return round(self.I[t + 1])
+        return (round(self.S[t + 1]), round(self.I[t + 1]), round(self.I[t + 1]))
 
     def draw(self):
         # Plot the results
