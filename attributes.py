@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class Anonymity(Enum):
+    """Anonymity characteristics for Agents"""
     NOT = 0.0
     MOSTLY_NOT = 0.25
     SOMEWHAT = 0.5
@@ -10,6 +11,7 @@ class Anonymity(Enum):
 
 
 class Ideology(Enum):
+    """Ideology characteristics for Agents and Memes"""
     ALT_RIGHT = 0.0
     CONSERVATIVE = 0.25
     MODERATE = 0.5
@@ -18,6 +20,7 @@ class Ideology(Enum):
 
 
 class Susceptability(Enum):
+    """Susceptability characteristics for Agents"""
     NEVER = 0.0
     INFREQUENTLY = 0.25
     SOMETIMES = 0.5
@@ -26,6 +29,7 @@ class Susceptability(Enum):
 
 
 class Racism(Enum):
+    """Racial bias characteristics for Agents and Memes"""
     ANTI = 0.0
     AGAINST = 0.25
     NEUTRAL = 0.5
@@ -34,6 +38,7 @@ class Racism(Enum):
 
 
 class States(Enum):
+    """Valid Agent states"""
     SUSCEPTIBLE = 0
     INFECTED = 1
     RECOVERED = 2

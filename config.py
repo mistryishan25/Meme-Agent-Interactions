@@ -22,6 +22,7 @@ EMOTIONAL_RESPONSES = True
 
 
 class Config:
+    """A simulation configuration object. Defaults set as reported in our paper."""
 
     def __init__(
             self,
@@ -33,6 +34,7 @@ class Config:
             verbose=VERBOSE,
             emotional_responses=EMOTIONAL_RESPONSES,
     ):
+        """Initialize config options."""
         self.anon_modifier = anon_modifier
         self.susc_modifier = susc_modifier
         self.anon_min = anon_min

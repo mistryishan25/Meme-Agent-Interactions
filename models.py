@@ -5,7 +5,10 @@ from matplotlib.colors import ListedColormap
 from agents import Agent
 
 
+# Additional models for simulations
+
 class InformationCascadeModel:
+    "Information Cascade simulation model."
     def __init__(self, agents):
         self.agents = agents
 
@@ -32,6 +35,7 @@ class InformationCascadeModel:
 
 
 class SIRModel:
+    """Basic SIR simulation model."""
     def __init__(self, num_agents, initial_infected, beta, gamma, days):
         self.num_agents = num_agents
         self.initial_infected = initial_infected
@@ -65,6 +69,7 @@ class SIRModel:
 
 
 class ForestFireModel:
+    """Forest Fire simulation model."""
     def __init__(self, size, seed_probability, ignition_probability, growth_probability):
         self.size = size
         self.seed_probability = seed_probability

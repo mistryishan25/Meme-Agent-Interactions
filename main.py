@@ -1,12 +1,13 @@
+from attributes import Ideology, Racism
+from config import Config
 from lonnberg import Lonnberg
 from meme import Meme
 from networks import CommunityClusters, PolarizedCrowd, RandomNetwork
-from attributes import Ideology, Racism
-from config import Config
 from simulation import simulate
 
 
 def main():
+    """Run several simulation scenarios."""
     # Reusable simulation parameters
     default_config = Config()
     verbose_config = Config(verbose=True)

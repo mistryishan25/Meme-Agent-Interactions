@@ -3,8 +3,10 @@ import numpy as np
 
 
 class Lonnberg:
+    """A SIR model based off the work of Lonnberg et al."""
 
     def __init__(self, num_steps, alpha=3.5, beta=1.25, gamma=1.1, dt=0.1, N=100, S_0=90, I_0=10, R_0=0):
+        """Initialize model parameters with defaults as reported in Figure 1 of the Lonnberg paper."""
         # Parameters
         self.alpha = alpha
         self.beta = beta

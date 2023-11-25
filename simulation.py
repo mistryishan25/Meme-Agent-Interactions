@@ -9,7 +9,8 @@ from meme import Meme
 from networks import NetworkBase
 
 
-def num_infected(agents: List[SimAgent]):
+def num_infected(agents: List[SimAgent]) -> int:
+    """Gets the number of infected agents in the simulation."""
     i = 0
     for agent in agents:
         if agent.state == States.INFECTED:
@@ -17,7 +18,8 @@ def num_infected(agents: List[SimAgent]):
     return i
 
 
-def num_susceptible(agents: List[SimAgent]):
+def num_susceptible(agents: List[SimAgent]) -> int:
+    """Gets the number of susceptible agents in the simulation."""
     i = 0
     for agent in agents:
         if agent.state == States.SUSCEPTIBLE:
@@ -25,7 +27,8 @@ def num_susceptible(agents: List[SimAgent]):
     return i
 
 
-def num_recovered(agents: List[SimAgent]):
+def num_recovered(agents: List[SimAgent]) -> int:
+    """Gets the number of recovered agents in the simulation."""
     i = 0
     for agent in agents:
         if agent.state == States.RECOVERED:
@@ -33,7 +36,8 @@ def num_recovered(agents: List[SimAgent]):
     return i
 
 
-def get_agent(agents, id):
+def get_agent(agents: List[Agent], id: int) -> Agent:
+    """Gets an agent with the given ID."""
     for agent in agents:
         if agent.id == id:
             return agent
@@ -41,21 +45,28 @@ def get_agent(agents, id):
 
 
 def simulate(desc: str, i_0: int, s_0: int, meme: Meme, network: NetworkBase, config: Config):
+    """Run a simulation with the given parameters and config."""
 
+    # Setup a queue with all Agents
     agent_queue = [Agent(id, States.SUSCEPTIBLE, meme, config) for id in network.nodes()]
 
+    # Initial SIR values
     infected = [i_0]
     susceptible = [s_0]
     recovered = [0]
 
+    # Make sure that i_0 number of agents start in the INFECTED state
     for i in range(i_0):
         agent_queue[i].state = States.INFECTED
 
+    # Run the simulation until num_infected == 0
     while num_infected(agent_queue) > 0:
+        # Dequeue agent, decide agent action, requeue agent
         current_agent = agent_queue.pop(0)
         neighbors = network.neighbors(current_agent.id)
         current_agent.decide_action([get_agent(agent_queue, id) for id in neighbors])
         agent_queue.append(current_agent)
+        # Log SIR values
         infected.append(num_infected(agent_queue))
         susceptible.append(num_susceptible(agent_queue))
         recovered.append(num_recovered(agent_queue))

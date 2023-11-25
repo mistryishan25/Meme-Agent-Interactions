@@ -1,6 +1,7 @@
+from enum import Enum
 import numpy as np
 import random
-from typing import List
+from typing import List, Tuple
 
 from attributes import Anonymity, Ideology, Racism, States, Susceptability
 from config import Config
@@ -8,13 +9,15 @@ from meme import Meme
 
 
 class SimAgent:
-
+    """This superclass exists so that Agent can use type hinting with itself."""
     pass
 
 
 class Agent(SimAgent):
+    """Represents an agent in the simulated network."""
 
     def __init__(self, id: int, state: States, meme: Meme, config: Config):
+        """Initialize the Agent, determine e/r (a.k.a. epsilon/rho) values."""
         # Agent properties
         self.id = id
         self.state = state
@@ -45,24 +48,34 @@ class Agent(SimAgent):
         self.aprint(f'{self.describe_susceptability()} susceptible to disinformation ({self.susceptability})')
         self.aprint(f'{self.describe_racism_level()} racist ({self.racism})')
 
-    def _map_to_attribute(self, cls, val):
+    def aprint(self, msg, *args):
+        """Print a message with some agent metadata."""
+        if self.config.verbose:
+            print(f'[Agent {self.id}|{self.state.name}|e={self.e}|r={self.r}]', msg, *args)
+
+    def _map_to_attribute(self, cls: Enum, val: float) -> str:
+        """Determine which attribute of the given class is closest to val."""
         return min(cls, key=lambda x: abs(val - x.value)).name
 
-    def describe_ideology(self):
+    def describe_ideology(self) -> str:
+        """Describes this agent's ideology attribute."""
         return self._map_to_attribute(Ideology, self.ideology)
 
-    def describe_anonymity(self):
+    def describe_anonymity(self) -> str:
+        """Describes this agent's anonymity attribute."""
         return self._map_to_attribute(Anonymity, self.anonymity)
 
-    def describe_racism_level(self):
+    def describe_racism_level(self) -> str:
+        """Describes this agent's racial bias attribute."""
         return self._map_to_attribute(Racism, self.racism)
 
-    def describe_susceptability(self):
+    def describe_susceptability(self) -> str:
+        """Describes this agent's susceptability attribute."""
         return self._map_to_attribute(Susceptability, self.susceptability)
 
-    def react(self, meme):
+    def react(self, meme: Meme) -> Tuple[float, float]:
         """
-        Computes this agent's sentiment towards a given Meme.
+        Compute this agent's sentiment towards a given Meme.
 
         Parameters
         ----------
@@ -77,7 +90,7 @@ class Agent(SimAgent):
             An engagement level of 0 indicates the Agent will not engage, where
             a level of 1 would mean the Agent is guaranteed to engage.
 
-            A reaction score of 0 indicates strong agreement, and a reaction score indicates
+            A reaction score of 0 indicates strong agreement, and a reaction score of 1 indicates
             strong disagreement.
         """
         ideology_diff = abs(self.ideology - meme.ideology.value)
@@ -116,15 +129,13 @@ class Agent(SimAgent):
         return (round(engagement_score, 2), round(reaction_score, 2))
 
     def get_sort_available_neighbors(self, neighbors: List[SimAgent]) -> List[SimAgent]:
+        """Gets this Agent's neighbors who can be sent the meme, sorted by most similar reaction scores."""
         most_similar = sorted(neighbors, key=lambda x: abs(self.r - x.r))
         return [agent for agent in most_similar if agent.state == States.SUSCEPTIBLE
                 or agent.state == States.RECOVERED]
 
-    def aprint(self, msg, *args):
-        if self.config.verbose:
-            print(f'[Agent {self.id}|{self.state.name}|e={self.e}|r={self.r}]', msg, *args)
-
     def decide_action(self, neighbors: List[SimAgent]):
+        """Decide on an action to take at the current time step."""
         if self.state == States.INFECTED:
             if np.random.uniform(0, 1) >= self.e:
                 self.aprint('Decided to do nothing.')
@@ -150,6 +161,7 @@ class Agent(SimAgent):
             self.aprint('Doing nothing.')
 
     def update_scores(self, e, r):
+        """Updates this agent's scores and prevents them from going out-of-bounds."""
         self.e = e
         self.r = r
         # Normalize values
@@ -162,8 +174,8 @@ class Agent(SimAgent):
         if self.e > 0.9:
             self.e = 0.9
 
-    # Actions as functions
     def send(self, neighbors: List[SimAgent]):
+        """Send the meme to one or more neighbor Agents."""
         self.aprint('Decided to send the meme')
         neighbors = self.get_sort_available_neighbors(neighbors)
         if len(neighbors) <= 1:
@@ -175,6 +187,7 @@ class Agent(SimAgent):
             neighbors[i].sent_by = self
 
     def consume(self, *args):
+        """Consume the meme and update e/r values."""
         self.aprint('Consuming the meme')
         # Reduce engagement level, adjust r score
         new_e = self.e - random.uniform(0, 0.5)
@@ -183,6 +196,7 @@ class Agent(SimAgent):
         self.aprint('Adjusted e/r values')
 
     def reply(self, *args):
+        """Reply to the Agent who sent this Agent the meme, and update their e/r values."""
         # Emotional response?
         if not self.sent_by:
             # Initial infection, do nothing

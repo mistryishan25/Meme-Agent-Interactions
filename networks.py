@@ -8,6 +8,7 @@ DEFAULT_NUM_AGENTS = 100
 
 
 class NetworkBase:
+    """Social network superclass with common methods."""
 
     def edges(self):
         return nx.edges(self.graph)
@@ -37,6 +38,7 @@ class NetworkBase:
 
 
 class RandomNetwork(NetworkBase):
+    """A randomly configured, highly-connected social network."""
 
     def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.2, draw=False):
         self.num_agents = num_agents
@@ -52,6 +54,7 @@ class RandomNetwork(NetworkBase):
 
 
 class PolarizedCrowd(NetworkBase):
+    """A polarized crowd social network."""
 
     def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.2, draw=False):
         # Create two separate networks
@@ -88,6 +91,7 @@ class PolarizedCrowd(NetworkBase):
 
 
 class CommunityClusters(NetworkBase):
+    """A community clusters social network."""
 
     def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.3, num_clusters=5, draw=False):
         # Calculate the size of each cluster

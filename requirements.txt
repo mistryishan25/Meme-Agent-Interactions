@@ -1,25 +1,5 @@
-appdirs==1.4.4
-Bottleneck @ file:///C:/Windows/Temp/abs_3198ca53-903d-42fd-87b4-03e6d03a8381yfwsuve8/croots/recipe/bottleneck_1657175565403/work
-certifi==2023.11.17
-charset-normalizer==3.3.2
-click==8.1.7
-colorama==0.4.6
-docker-pycreds==0.4.0
-gitdb==4.0.11
-GitPython==3.1.40
-idna==3.5
-mkl-fft @ file:///C:/b/abs_19i1y8ykas/croot/mkl_fft_1695058226480/work
-mkl-random @ file:///C:/b/abs_edwkj1_o69/croot/mkl_random_1695059866750/work
-mkl-service==2.4.0
-networkx @ file:///C:/b/abs_e6gi1go5op/croot/networkx_1690562046966/work
-numexpr @ file:///C:/b/abs_5fucrty5dc/croot/numexpr_1696515448831/work
-numpy @ file:///C:/b/abs_9fu2cs2527/croot/numpy_and_numpy_base_1695830496596/work/dist/numpy-1.26.0-cp39-cp39-win_amd64.whl#sha256=9df7f35b8a04328650588772e3df359b51f1e83651ab665c98af9dbcf9a088c2
-pandas @ file:///C:/b/abs_81b3npjrl8/croot/pandas_1697477219064/work/dist/pandas-2.1.1-cp39-cp39-win_amd64.whl#sha256=52f4b2edc1ff7d4ab3efc3bc5744e39c3cdbd6d723393d35fe439f4e139fde7a
-protobuf==4.25.1
-psutil==5.9.6
-python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
-pytz @ file:///C:/b/abs_19q3ljkez4/croot/pytz_1695131651401/work
-PyYAML==6.0.1
-requests==2.31.0
-urllib3==2.1.0
-wandb==0.16.0
+numpy
+pandas
+scipy
+matplotlib
+networkx
