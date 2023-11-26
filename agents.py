@@ -1,6 +1,8 @@
+import numpy as np
 import random
 
 class Agent:
+
     def __init__(self, agent_id):
         self.agent_id = agent_id
         self.age = random.randint(18, 65)  # Random age between 18 and 65
@@ -16,6 +18,7 @@ class Agent:
         # Implement meme sharing behavior
         pass
 
+
     def decide_action(self, meme, neighbors):
         actions = [
             (0.3, self.send_meme),
@@ -30,6 +33,7 @@ class Agent:
             cumulative_prob += prob
             if action_prob <= cumulative_prob:
                 return action(meme, neighbors)
+
 
 
     def emotional_response(self, meme):

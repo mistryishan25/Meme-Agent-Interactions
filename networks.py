@@ -1,16 +1,19 @@
+import math
+import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import random
 
-class RandomNetwork:
-    def __init__(self, num_agents, edge_probability):
-        self.num_agents = num_agents
-        self.edge_probability = edge_probability
-        self.graph = self.generate_random_network()
+DEFAULT_NUM_AGENTS = 100
 
-    def generate_random_network(self):
-        # Create a random graph (Erdős-Rényi model)
-        random_network = nx.erdos_renyi_graph(self.num_agents, self.edge_probability)
-        return random_network
+
+class NetworkBase:
+
+    def edges(self):
+        return nx.edges(self.graph)
+
+    def nodes(self):
+        return nx.nodes(self.graph)
 
     def get_network_properties(self):
         num_edges = self.graph.number_of_edges()
@@ -23,17 +26,93 @@ class RandomNetwork:
         random_agent_nodes = random.sample(agent_nodes, num_random_nodes)
         return random_agent_nodes
 
-# Example usage:
-if __name__ == "__main__":
-    num_agents = 100
-    edge_probability = 0.1
 
-    random_network = RandomNetwork(num_agents, edge_probability)
+class RandomNetwork(NetworkBase):
 
-    num_nodes, num_edges, average_degree = random_network.get_network_properties()
-    print(f"Number of nodes: {num_nodes}")
-    print(f"Number of edges: {num_edges}")
-    print(f"Average degree: {average_degree}")
+    def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.2, draw=False):
+        self.num_agents = num_agents
+        self.edge_probability = edge_probability
+        self.graph = nx.erdos_renyi_graph(self.num_agents, self.edge_probability)
 
-    random_agent_nodes = random_network.get_random_agent_nodes(10)
-    print(f"Random agent nodes: {random_agent_nodes}")
+        # Draw the graph
+        if draw:
+            pos = nx.spring_layout(self.graph)  # Positions of the nodes
+            nx.draw(self.graph, pos, with_labels=True, node_size=200)
+            plt.title("Network (Random Network)")
+            plt.show()
+
+
+class PolarizedCrowd(NetworkBase):
+
+    def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.2, draw=False):
+        # Create two separate networks
+        group1 = nx.erdos_renyi_graph(int(num_agents / 2), edge_probability)
+        group2 = nx.erdos_renyi_graph(math.ceil(num_agents / 2), edge_probability)
+
+        # Rename nodes in group2 to have distinct node names
+        group2 = nx.relabel_nodes(group2, {node: node + int(num_agents / 2) for node in group2.nodes})
+
+        # Connect the two groups with ~5% of the total nodes
+        cross_edges = []
+        for _ in range(int(num_agents * .05)):
+            cross_edges.append((np.random.randint(0, int(num_agents / 2)),
+                                np.random.randint(int(num_agents / 2), num_agents)))
+
+        # Create an empty graph
+        self.graph = nx.Graph()
+
+        # Add nodes and edges from both groups
+        self.graph.add_nodes_from(group1)
+        self.graph.add_nodes_from(group2)
+        self.graph.add_edges_from(group1.edges)
+        self.graph.add_edges_from(group2.edges)
+
+        # Add the cross-edges between the groups
+        self.graph.add_edges_from(cross_edges)
+
+        # Draw the graph
+        if draw:
+            pos = nx.spring_layout(self.graph)  # Positions of the nodes
+            nx.draw(self.graph, pos, with_labels=True, node_size=200)
+            plt.title("Network (Polarized Crowd)")
+            plt.show()
+
+
+class CommunityClusters(NetworkBase):
+
+    def __init__(self, num_agents=DEFAULT_NUM_AGENTS, edge_probability=0.3, num_clusters=5, draw=False):
+        # Calculate the size of each cluster
+        cluster_size = int(num_agents / num_clusters)
+        print('cluster size: ', cluster_size)
+
+        # Create an empty graph
+        community_clusters = nx.Graph()
+
+        # Create clusters and connect them
+        for i in range(num_clusters):
+            if i == 0:
+                # If num_agents and num_clusters are configured to where each cluster cannot have the same size,
+                # add the "remainder" nodes to the first cluster.
+                extra_nodes = num_agents - (cluster_size * num_clusters)
+                cluster = nx.erdos_renyi_graph(cluster_size + extra_nodes, edge_probability)
+                cluster = nx.relabel_nodes(cluster, {node: node + i * cluster_size for node in cluster.nodes})
+            else:
+                cluster = nx.erdos_renyi_graph(cluster_size, edge_probability)
+                cluster = nx.relabel_nodes(cluster, {node: node + extra_nodes + i * cluster_size for node in cluster.nodes})
+            community_clusters.add_nodes_from(cluster)
+            community_clusters.add_edges_from(cluster.edges)
+
+        # Connect all clusters to each other
+        for i in range(num_clusters):
+            for j in range(i + 1, num_clusters):
+                nodes_cluster1 = list(range(i * cluster_size, (i + 1) * cluster_size))
+                nodes_cluster2 = list(range(j * cluster_size, (j + 1) * cluster_size))
+                edge_to_add = random.choice(nodes_cluster1), random.choice(nodes_cluster2)
+                community_clusters.add_edge(*edge_to_add)
+
+        # Draw the graph
+        if draw:
+            pos = nx.spring_layout(community_clusters)  # Positions of the nodes
+            nx.draw(community_clusters, pos, with_labels=True, node_size=200)
+            plt.title("Network (Community Clusters)")
+            plt.show()
