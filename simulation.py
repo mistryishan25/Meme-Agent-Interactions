@@ -44,11 +44,21 @@ def get_agent(agents: List[Agent], id: int) -> Agent:
     raise ValueError(f'Agent with id {id} not found!')
 
 
-def simulate(desc: str, i_0: int, s_0: int, meme: Meme, network: NetworkBase, config: Config):
+def simulate(desc: str, i_0: int, s_0: int, meme: Meme, network: NetworkBase, config: Config,
+             secondary: Config = None):
     """Run a simulation with the given parameters and config."""
 
-    # Setup a queue with all Agents
-    agent_queue = [Agent(id, States.SUSCEPTIBLE, meme, config) for id in network.nodes()]
+    if not secondary:
+        # Setup a queue with all Agents with the same config
+        agent_queue = [Agent(id, States.SUSCEPTIBLE, meme, config) for id in network.nodes()]
+    else:
+        # Split up the agents between two config options
+        agent_queue = []
+        for idx, id in enumerate(network.nodes()):
+            if idx <= len(network.nodes()) / 2:
+                agent_queue.append(Agent(id, States.SUSCEPTIBLE, meme, config))
+            else:
+                agent_queue.append(Agent(id, States.SUSCEPTIBLE, meme, secondary))
 
     # Initial SIR values
     infected = [i_0]

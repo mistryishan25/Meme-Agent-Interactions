@@ -13,10 +13,33 @@ def main():
     verbose_config = Config(verbose=True)
     high_anon_config = Config(anon_min=0.8, anon_max=1.0)
     low_anon_config = Config(anon_min=0.0, anon_max=0.2)
+    echo_chamber_config = Config(
+        anon_min=0.8,
+        anon_max=1.0,
+        susc_modifier=0.10,
+        susceptibility_min=0.75,
+        susceptibility_max=1.0,
+        racial_bias_min=0.0,
+        racial_bias_max=0.25,
+        ideology_min=0.75,
+        ideology_max=1.0,
+    )
+    echo_chamber_config_2 = Config(
+        anon_min=0.8,
+        anon_max=1.0,
+        susc_modifier=0.10,
+        susceptibility_min=0.75,
+        susceptibility_max=1.0,
+        racial_bias_min=0.75,
+        racial_bias_max=1.0,
+        ideology_min=0.0,
+        ideology_max=0.25,
+    )
     rand_net = RandomNetwork()
     cc_net = CommunityClusters()
     polarized_net = PolarizedCrowd()
     controversial_meme = Meme('A racist meme', Ideology.ALT_RIGHT, 0.2, Racism.HARD)
+    controversial_meme_2 = Meme('A highly political meme', Ideology.LEFTIST, 0.4, Racism.ANTI)
     uncontroversial_meme = Meme('A funny meme', Ideology.MODERATE, 1.0, Racism.NEUTRAL)
 
     # RandomNetwork | Controversial Meme
@@ -48,6 +71,24 @@ def main():
     i_0 = 30
     s_0 = 70
     simulate(desc, i_0, s_0, controversial_meme, polarized_net, default_config)
+
+    # RandomNetwork | Echo Chamber
+    desc = 'RandomNetwork | Echo Chamber'
+    i_0 = 10
+    s_0 = 80
+    simulate(desc, i_0, s_0, controversial_meme_2, rand_net, echo_chamber_config)
+
+    # RandomNetwork | Hornet's Nest
+    desc = "RandomNetwork | Hornet's Nest"
+    i_0 = 30
+    s_0 = 70
+    simulate(desc, i_0, s_0, controversial_meme_2, rand_net, echo_chamber_config_2)
+
+    # PolarizedCrowd | Opposing Factions
+    desc = 'PolarizedCrowd | Opposing Factions'
+    i_0 = 30
+    s_0 = 70
+    simulate(desc, i_0, s_0, controversial_meme, polarized_net, echo_chamber_config, secondary=echo_chamber_config_2)
 
     # Lonnberg SIR model (baseline)
     num_days = 900

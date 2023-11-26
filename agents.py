@@ -3,7 +3,7 @@ import numpy as np
 import random
 from typing import List, Tuple
 
-from attributes import Anonymity, Ideology, Racism, States, Susceptability
+from attributes import Anonymity, Ideology, Racism, States, susceptibility
 from config import Config
 from meme import Meme
 
@@ -29,11 +29,12 @@ class Agent(SimAgent):
         # Agent characteristics from 0-1 scales
         #
         # Political Ideology
-        self.ideology = round(np.random.random(), 2)
+        self.ideology = round(np.random.uniform(self.config.ideology_min, self.config.ideology_max), 2)
         # Level of racism
-        self.racism = round(np.random.random(), 2)
-        # Susceptability to conspiracy theories & disinformation
-        self.susceptability = round(np.random.random(), 2)
+        self.racism = round(np.random.uniform(self.config.racial_bias_min, self.config.racial_bias_max), 2)
+        # susceptibility to conspiracy theories & disinformation
+        self.susceptibility = round(np.random.uniform(self.config.susceptibility_min,
+                                                      self.config.susceptibility_max), 2)
         # Level of anonymity this Agent has in the social network
         self.anonymity = round(np.random.uniform(self.config.anon_min, self.config.anon_max), 2)
 
@@ -45,7 +46,7 @@ class Agent(SimAgent):
 
         self.aprint(f'{self.describe_anonymity()} anonymous ({self.anonymity})')
         self.aprint(f'{self.describe_ideology()} ideology ({self.ideology})')
-        self.aprint(f'{self.describe_susceptability()} susceptible to disinformation ({self.susceptability})')
+        self.aprint(f'{self.describe_susceptibility()} susceptible to disinformation ({self.susceptibility})')
         self.aprint(f'{self.describe_racism_level()} racist ({self.racism})')
 
     def aprint(self, msg, *args):
@@ -69,9 +70,9 @@ class Agent(SimAgent):
         """Describes this agent's racial bias attribute."""
         return self._map_to_attribute(Racism, self.racism)
 
-    def describe_susceptability(self) -> str:
-        """Describes this agent's susceptability attribute."""
-        return self._map_to_attribute(Susceptability, self.susceptability)
+    def describe_susceptibility(self) -> str:
+        """Describes this agent's susceptibility attribute."""
+        return self._map_to_attribute(susceptibility, self.susceptibility)
 
     def react(self, meme: Meme) -> Tuple[float, float]:
         """
@@ -117,8 +118,8 @@ class Agent(SimAgent):
         # If the agent highly agrees/disagrees but is susceptible to disinformation,
         # they are more likely to engage
         if meme.truthfulness < 0.5:
-            susceptability_modifier = self.config.susc_modifier * self.susceptability
-            engagement_score += (engagement_score * susceptability_modifier)
+            susceptibility_modifier = self.config.susc_modifier * self.susceptibility
+            engagement_score += (engagement_score * susceptibility_modifier)
 
         # Ensure the engagement score has not exceeded the bounds of 0, 1
         if engagement_score > 1:

@@ -19,8 +19,8 @@ class Ideology(Enum):
     LEFTIST = 1.0
 
 
-class Susceptability(Enum):
-    """Susceptability characteristics for Agents"""
+class susceptibility(Enum):
+    """susceptibility characteristics for Agents"""
     NEVER = 0.0
     INFREQUENTLY = 0.25
     SOMETIMES = 0.5
