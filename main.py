@@ -8,17 +8,7 @@ from networks import CommunityClusters, PolarizedCrowd, RandomNetwork
 import wandb
 
 
-# Actions as functions
-def send_meme(sender, receiver, meme):
-    sender.consume_meme(meme)
-    receiver.receive_meme(meme)
 
-def consume_meme(agent, meme):
-    agent.characteristics['influence'] += random.uniform(-0.1, 0.1)
-
-def forward_meme(sender, receiver, meme):
-    sender.consume_meme(meme)
-    receiver.receive_meme(meme)
 
 def main():
     # # Define a set of parameter values to explore
