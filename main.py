@@ -1,7 +1,13 @@
 import random
-import wandb  
 
-# Define the Agent and Action classes as described before
+import networkx as nx
+import wandb
+
+from agents import Agent
+from lonnberg import Lonnberg
+from meme import Meme
+from networks import CommunityClusters, PolarizedCrowd, RandomNetwork
+
 
 # Actions as functions
 def send_meme(sender, receiver, meme):
@@ -15,36 +21,50 @@ def forward_meme(sender, receiver, meme):
     sender.consume_meme(meme)
     receiver.receive_meme(meme)
 
-# Simulation setup
-def run_simulation(parameters):
-    agents = [Agent(i) for i in range(10)]  # Create a list of 10 agents for example
-    initial_meme = {'content': 'Initial content'}
+def main():
+    # # Define a set of parameter values to explore
+    # parameter_values = {
+    #     'strategy': ['random', 'influence_based', 'degree_based'],
+    #     'other_parameter': [value1, value2, value3],
+    #     # Add more parameters as needed
+    # }
 
-    # Seed initial actions
-    initial_actions = [agent.decide_action(initial_meme, agents) for agent in agents]
+    # # Initialize Weights & Biases
+    # wandb.init(project='your_project_name', config=parameter_values)
 
-    # Simulation loop
-    action_queue = initial_actions
+    # # Run simulations for different parameter combinations
+    # for config in wandb.config:
+    #     run_simulation(config)
 
-    while action_queue:
-        current_action = action_queue.pop(0)
+    # Run an initial experiment with a Polarized Crowd Network
+    num_days = 900
+    time_step = 3
+    num_steps = int(num_days / time_step)
 
-        # Process the action and enqueue the resulting actions
-        current_action
+    network = PolarizedCrowd()
+    sim = Lonnberg(num_steps)
 
-    # Analyze results, collect data, etc.
-    # You can add your analysis here
+    agent_queue = [Agent(id) for id in network.nodes()]
 
-# Define a set of parameter values to explore
-parameter_values = {
-    'strategy': ['random', 'influence_based', 'degree_based'],
-    'other_parameter': [value1, value2, value3],
-    # Add more parameters as needed
-}
+    initial_meme = Meme('Some content')
 
-# Initialize Weights & Biases
-wandb.init(project='your_project_name', config=parameter_values)
+    for t in range(num_steps):
+        expected_e = sim.step(t)  # Modeled engagement at the current time step
+        current_e = 0             # Measured engagement
 
-# Run simulations for different parameter combinations
-for config in wandb.config:
-    run_simulation(config)
+        while current_e < expected_e:
+            agent = agent_queue.pop(0)
+            if agent.decide_action(initial_meme, network):
+                print(f'Agent {agent.agent_id} engaged with the meme')
+                current_e += 1
+            else:
+                print(f'Agent {agent.agent_id} did not engage with the meme')
+            agent_queue.append(agent)
+
+        print(f'TIME STEP {t}')
+
+    sim.draw()
+
+
+if __name__ == '__main__':
+    main()

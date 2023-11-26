@@ -1,6 +1,8 @@
+import numpy as np
 import random
 
 class Agent:
+
     def __init__(self, agent_id):
         self.agent_id = agent_id
         self.age = random.randint(18, 65)  # Random age between 18 and 65
@@ -16,9 +18,26 @@ class Agent:
         # Implement meme sharing behavior
         pass
 
-    def make_decision(self, meme):
+    def decide_action(self, meme, network):
+        """
+        Executes an Agent action and returns whether this Agent has "engaged" with the meme as
+        a part of this action.
+
+        Parameters
+        ----------
+        meme : Meme
+            The Meme that is the subject of the current simulation.
+        network : nx.Graph
+            The Agent network.
+
+        Returns
+        -------
+        bool
+            Whether the agent engages with the meme as a part of its decided action.
+        """
         # Implement decision-making process
-        pass
+        # Placeholder: return T/F with 50% probability
+        return np.random.random() > 0.5
 
     def emotional_response(self, meme):
         # Implement emotional response to memes
