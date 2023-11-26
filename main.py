@@ -1,12 +1,11 @@
 import random
-
 import networkx as nx
 import wandb
-
 from agents import Agent
 from lonnberg import Lonnberg
 from meme import Meme
 from networks import CommunityClusters, PolarizedCrowd, RandomNetwork
+import wandb
 
 
 # Actions as functions
