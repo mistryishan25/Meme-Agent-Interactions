@@ -1,7 +1,6 @@
 import random
-import wandb  
+import wandb
 
-# Define the Agent and Action classes as described before
 
 # Actions as functions
 def send_meme(sender, receiver, meme):

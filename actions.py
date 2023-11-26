@@ -1,35 +1,16 @@
 import random
 
-class Agent:
-    def __init__(self, agent_id):
-        self.agent_id = agent_id
-        self.characteristics = {'influence': random.uniform(0, 1)}
+receivers = []
+def send_meme(self, meme, neighbors):
+    receiver = random.choice(neighbors)
+    send_meme(self, receiver, meme)
 
-    def decide_action(self, meme, neighbors):
-        actions = [
-            (0.3, self.send_meme),
-            (0.4, self.consume_meme),
-            (0.3, self.forward_meme)
-        ]
+def consume_meme(self, meme, neighbors):
+    consume_meme(self, meme)
 
-        action_prob = random.uniform(0, 1)
-        cumulative_prob = 0
-
-        for prob, action in actions:
-            cumulative_prob += prob
-            if action_prob <= cumulative_prob:
-                return action(meme, neighbors)
-
-    def send_meme(self, meme, neighbors):
-        receiver = random.choice(neighbors)
-        send_meme(self, receiver, meme)
-
-    def consume_meme(self, meme, neighbors):
-        consume_meme(self, meme)
-
-    def forward_meme(self, meme, neighbors):
-        receiver = random.choice(neighbors)
-        forward_meme(self, receiver, meme)
+def forward_meme(self, meme, neighbors):
+    receiver = random.choice(neighbors)
+    forward_meme(self, receiver, meme)
 
 # Actions as functions
 def send_meme(sender, receiver, meme):
@@ -50,6 +31,5 @@ def forward_meme(self, meme, neighbors):
         # Implement a degree-based forwarding strategy
         pass
 
-    for receiver in receivers:
-        forward_meme(self, receiver, meme)
+
 
